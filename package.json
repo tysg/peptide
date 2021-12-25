@@ -1,7 +1,7 @@
 {
 	"name": "peptide",
 	"displayName": "Peptide: Python Interactive Programming",
-	"description": "CIDER/SLIME-like REPL-driven programming for Python",
+	"description": "(early development) CIDER/SLIME-like REPL-driven programming for Python",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.63.0"
@@ -50,7 +50,8 @@
 		"mocha": "^9.1.3",
 		"tree-sitter-cli": "^0.20.1",
 		"tree-sitter-python": "^0.19.0",
-		"typescript": "^4.4.4"
+		"typescript": "^4.4.4",
+		"vsce": "^2.5.3"
 	},
 	"dependencies": {
 		"web-tree-sitter": "^0.19.4"
