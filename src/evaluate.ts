@@ -5,8 +5,12 @@ import { getTopLevelForm } from "./parser"
 // Commands related to evaluation
 
 async function evalTopLevelForm(parser: Parser) {
-    let editor = vscode.window.activeTextEditor!
+    let editor = vscode.window.activeTextEditor
+    if (!editor) {
+        return 
+    }
     let doc = editor.document
+
 
     const tree = parser.parse(doc.getText()).rootNode
 
@@ -23,4 +27,18 @@ async function evalTopLevelForm(parser: Parser) {
     vscode.commands.executeCommand("python.execSelectionInTerminal")
 }
 
-export { evalTopLevelForm };
+
+async function evalCurrentFile(parser: Parser) {
+    let editor = vscode.window.activeTextEditor
+    if (!editor) {
+        return 
+    }
+    let doc = editor.document
+    const tree = parser.parse(doc.getText()).rootNode
+
+    editor.selection = new vscode.Selection(doc.positionAt(0), doc.positionAt(tree.endIndex)) 
+    vscode.commands.executeCommand("python.execSelectionInTerminal")
+}
+
+
+export { evalTopLevelForm, evalCurrentFile };

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { evalTopLevelForm } from './evaluate';
+import { evalTopLevelForm, evalCurrentFile } from './evaluate';
 import { initParser } from './parser'
 
 // this method is called when your extension is activated
@@ -13,6 +13,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('peptide.evalTopLevelForm', () => evalTopLevelForm(parser)));
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('peptide.evalCurrentFile', () => evalCurrentFile(parser)));
 }
 
 // this method is called when your extension is deactivated

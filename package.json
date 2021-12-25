@@ -3,6 +3,11 @@
 	"displayName": "Peptide: Python Interactive Programming",
 	"description": "(early development) CIDER/SLIME-like REPL-driven programming for Python",
 	"version": "0.0.1",
+	"publisher": "tysg",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tysg/peptide.git"
+	},
 	"engines": {
 		"vscode": "^1.63.0"
 	},
@@ -10,7 +15,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:peptide.evalTopLevelForm"
+		"onCommand:peptide.evalTopLevelForm",
+		"onCommand:peptide.evalCurrentFile"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -19,12 +25,22 @@
 				"command": "peptide.evalTopLevelForm",
 				"title": "Peptide: Evaluate Top Level Form",
 				"enablement": "editorLangId == python"
+			},
+			{
+				"command": "peptide.evalCurrentFile",
+				"title": "Peptide: Evaluate the Current File",
+				"enablement": "editorLangId == python"
 			}
 		],
 		"keybindings": [
 			{
 				"command": "peptide.evalTopLevelForm",
 				"key": "alt+enter",
+				"when": "editorLangId == python && editorTextFocus"
+			},
+			{
+				"command": "peptide.evalCurrentFile",
+				"key": "ctrl+alt+enter",
 				"when": "editorLangId == python && editorTextFocus"
 			}
 		]
