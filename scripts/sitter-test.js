@@ -12,7 +12,7 @@ function pp(n) {
 }
 async function main() {
     // parse current python file
-    const langFile = path.join(__dirname, "assets", "tree-sitter-python.wasm")
+    const langFile = path.join(__dirname, "..", "assets", "tree-sitter-python.wasm")
     await Parser.init()
 
     const parser = new Parser();
@@ -27,14 +27,16 @@ async function main() {
         // .parent
         // .toString()
 
-    console.log(
-        tree.rootNode.descendantForIndex()
-        .parent
-        .parent
-        .parent
-        .parent
-        .toString()
-    )
+    // find the largest node s.t. index < given
+    // idx 59
+
+    const n = tree.rootNode
+    
+
+    // console.log(
+    
+    //     tree.rootNode.
+    // )
 
 }
 

@@ -18,6 +18,26 @@ function getTopLevelForm(root: Parser.SyntaxNode, offset: number): vscode.Select
     )
 }
 
+
+
+function getPrecedingForm(root: Parser.SyntaxNode, offset: number): vscode.Selection | null {
+    // selects the preceding function call or name
+    const f = root.children.find(
+        (n) => (offset <= n.endIndex) && (offset >= n.startIndex))
+
+    if (!f) {
+        return null
+    }
+
+    return new vscode.Selection(
+        f.startPosition.row,
+        f.startPosition.column,
+        f.endPosition.row,
+        f.endPosition.column
+    )
+}
+
+
 async function initParser(): Promise<Parser> {
     await Parser.init()
 
