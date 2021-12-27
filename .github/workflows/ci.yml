@@ -8,10 +8,11 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    # strategy:
+    #   matrix:
+    #     os: [macos-latest, ubuntu-latest, windows-latest]
+    # runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,7 +23,7 @@ jobs:
           cache: "yarn"
       - run: yarn install --immutable --immutable-cache --check-cache
       # - run: yarn run unit-test
-      - run: xvfb-run -a yarn test
-        if: runner.os == 'Linux'
+      # - run: xvfb-run -a yarn test
+      #   if: runner.os == 'Linux'
       - run: yarn test
-        if: runner.os != 'Linux'
+        # if: runner.os != 'Linux'
