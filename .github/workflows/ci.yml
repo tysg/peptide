@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    # strategy:
+    #   matrix:
+    #     os: [macos-latest, ubuntu-latest, windows-latest]
+    # runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+          cache: "yarn"
+      - run: yarn install --immutable --immutable-cache --check-cache
+      # - run: yarn run unit-test
+      # - run: xvfb-run -a yarn test
+      #   if: runner.os == 'Linux'
+      - run: yarn test
+        # if: runner.os != 'Linux'
