@@ -22,7 +22,7 @@ async function evalTopLevelForm(parser: Parser) {
     return;
   }
 
-  editor.selection = form;
+  editor.selection = selectSyntaxNode(form);
   vscode.commands.executeCommand("python.execSelectionInTerminal");
 }
 
@@ -36,6 +36,15 @@ async function evalCurrentFile(parser: Parser) {
 
   editor.selection = new vscode.Selection(doc.positionAt(0), doc.positionAt(tree.endIndex));
   vscode.commands.executeCommand("python.execSelectionInTerminal");
+}
+
+function selectSyntaxNode(f: Parser.SyntaxNode): vscode.Selection {
+  return new vscode.Selection(
+    f.startPosition.row,
+    f.startPosition.column,
+    f.endPosition.row,
+    f.endPosition.column
+  );
 }
 
 export { evalTopLevelForm, evalCurrentFile };

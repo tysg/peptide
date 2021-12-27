@@ -1,12 +1,13 @@
 const path = require('path');
 const Parser = require('web-tree-sitter');
 
-const sourceCode =
-`def hello_world():
-    print("hello world!")
 
-hello_world()
-`
+function extractCursor(source) {
+    const idx = source.indexOf("$");
+    const sourceCode = source.replace("$", "");
+    return [idx, sourceCode]
+}
+
 function pp(n) {
     console.log(n.toString())
 }
@@ -17,26 +18,30 @@ async function main() {
 
     const parser = new Parser();
     const Lang = await Parser.Language.load(langFile)
-
     parser.setLanguage(Lang)
-    const tree = parser.parse(sourceCode)
-        // tree.rootNode.descendantForPosition({ row: 3, column: 12 })
-        // .parent
-        // .parent
-        // .parent
-        // .parent
-        // .toString()
 
+    const sourceCode   =
+`def hello_world():
+    print("hello world!")
+
+hello_world()
+`
+    let [cursorIdx, source] = extractCursor(sourceCode)
+
+    const tree = parser.parse(source);
+
+    console.log(
+        tree.rootNode.descendantForIndex(cursorIdx)
+        .toString()
+    )
+
+    // console.log(tree)
     // find the largest node s.t. index < given
     // idx 59
 
     const n = tree.rootNode
     
 
-    // console.log(
-    
-    //     tree.rootNode.
-    // )
 
 }
 
