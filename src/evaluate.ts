@@ -3,8 +3,9 @@ import * as Parser from "web-tree-sitter";
 import { getTopLevelForm } from "./parser";
 
 // Commands related to evaluation
+type SelectFn = (root: Parser.SyntaxNode, offset: number) => Parser.SyntaxNode | undefined;
 
-async function evalTopLevelForm(parser: Parser) {
+async function evalSelectedForm(parser: Parser, selectFn: SelectFn) {
   let editor = vscode.window.activeTextEditor;
   if (!editor) {
     return;
@@ -16,7 +17,7 @@ async function evalTopLevelForm(parser: Parser) {
   // find form at cursor
   const p = editor.selection.active;
 
-  const form = getTopLevelForm(tree, doc.offsetAt(p));
+  const form = selectFn(tree, doc.offsetAt(p));
   if (!form) {
     console.error("No parent found for current cursor");
     return;
@@ -47,4 +48,4 @@ function selectSyntaxNode(f: Parser.SyntaxNode): vscode.Selection {
   );
 }
 
-export { evalTopLevelForm, evalCurrentFile };
+export { evalSelectedForm, evalCurrentFile };

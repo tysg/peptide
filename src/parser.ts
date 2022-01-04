@@ -6,8 +6,19 @@ function getTopLevelForm(root: Parser.SyntaxNode, offset: number): Parser.Syntax
 }
 
 function getPrecedingForm(root: Parser.SyntaxNode, offset: number): Parser.SyntaxNode | undefined {
-  // selects the preceding function call or name
-  return root.children.find((n) => offset <= n.endIndex && offset >= n.startIndex);
+  if (root.endIndex <= offset || root.namedChildren === null) {
+    return root;
+  }
+
+  for (const child of root.namedChildren) {
+    if (child.startIndex > offset) {
+      break;
+    }
+    if (child.startIndex < offset && child.endIndex >= offset) {
+      // included
+      return getPrecedingForm(child, offset);
+    }
+  }
 }
 
 async function initParser(): Promise<Parser> {
@@ -20,4 +31,4 @@ async function initParser(): Promise<Parser> {
   return parser;
 }
 
-export { getTopLevelForm, initParser };
+export { getTopLevelForm, getPrecedingForm, initParser };

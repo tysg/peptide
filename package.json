@@ -30,6 +30,11 @@
 				"command": "peptide.evalCurrentFile",
 				"title": "Peptide: Evaluate the Current File",
 				"enablement": "editorLangId == python"
+			},
+			{
+				"command": "peptide.evalPrecedingForm",
+				"title": "Peptide: Evaluate Preceding Form",
+				"enablement": "editorLangId == python"
 			}
 		],
 		"keybindings": [
@@ -41,6 +46,11 @@
 			{
 				"command": "peptide.evalCurrentFile",
 				"key": "ctrl+alt+enter",
+				"when": "editorLangId == python && editorTextFocus"
+			},
+			{
+				"command": "peptide.evalPrecedingForm",
+				"key": "ctrl+shift+enter",
 				"when": "editorLangId == python && editorTextFocus"
 			}
 		]

@@ -29,6 +29,8 @@ hello_world()
     let [cursorIdx, source] = extractCursor(sourceCode)
 
     const tree = parser.parse(source);
+    const loren = `lorem(ipsum(hello("world"))$)`
+    console.log(extractCursor(loren))
 
     console.log(
         tree.rootNode.descendantForIndex(cursorIdx)

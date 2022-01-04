@@ -55,4 +55,26 @@ hello_world()$
     const res = parser.getTopLevelForm(root, cursor);
     assert.strictEqual(res?.text, "hello_world()");
   });
+
+  test("select preceding form", async function () {
+    let tests = [
+      [`loren(ipsum(dolor()))$`, "loren(ipsum(dolor()))"],
+      [`loren(ipsum(dolor())$)`, "ipsum(dolor())"],
+      [`loren(ipsum(dolor()$))`, "dolor()"],
+      [`loren(ipsum(dolor$()))`, "dolor"],
+      [`hello(2$, "world", loren("ipsum"), True)`, "2"],
+      [`hello(2, "world"$, loren("ipsum"), True)`, `"world"`],
+      [`hello(2, "world", loren("ipsum")$, True)`, `loren("ipsum")`],
+      [`hello(2, "world", loren("ipsum"), True$)`, `True`],
+      [`hello(2, "world", loren("ipsum"), True)$`, `hello(2, "world", loren("ipsum"), True)`],
+    ];
+
+    for (const [source, selected] of tests) {
+      const { cursor, code } = extractCursor(source);
+      const root: Parser.SyntaxNode = this.p.parse(code).rootNode;
+
+      const res = parser.getPrecedingForm(root, cursor);
+      assert.strictEqual(res?.text, selected);
+    }
+  });
 });
