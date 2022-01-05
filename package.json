@@ -16,7 +16,8 @@
 	],
 	"activationEvents": [
 		"onCommand:peptide.evalTopLevelForm",
-		"onCommand:peptide.evalCurrentFile"
+		"onCommand:peptide.evalCurrentFile",
+		"onCommand:peptide.evalPrecedingForm"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -50,7 +51,7 @@
 			},
 			{
 				"command": "peptide.evalPrecedingForm",
-				"key": "ctrl+shift+enter",
+				"key": "ctrl+enter",
 				"when": "editorLangId == python && editorTextFocus"
 			}
 		]

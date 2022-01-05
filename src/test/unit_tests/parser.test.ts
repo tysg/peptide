@@ -10,50 +10,50 @@ suite("Unit Test - Parser", () => {
     return;
   });
 
-  test("select current top-level form: function definition", async function () {
-    let raw = `
+  test("select top-level form", async function () {
+    let tests = [
+      // after function call
+      [
+        `
+def hello_world():
+    print("hello world!")
+
+hello_world()$ 
+`,
+        "hello_world()",
+      ],
+      // on function call
+
+      [
+        `
+def hello_world():
+    print("hello world!")
+
+hello_$world() 
+`,
+        "hello_world()",
+      ],
+
+      // on function definition
+      [
+        `
 def hello_world():
     pri$nt("hello world!")
 
-hello_world()
-`;
-    const { cursor, code } = extractCursor(raw);
-    const root: Parser.SyntaxNode = this.p.parse(code).rootNode;
+hello_world() 
+`,
+        `def hello_world():
+    print("hello world!")`,
+      ],
+    ];
 
-    const res = parser.getTopLevelForm(root, cursor);
-    assert.strictEqual(
-      res?.text,
-      `def hello_world():
-    print("hello world!")`
-    );
-  });
+    for (const [source, selected] of tests) {
+      const { cursor, code } = extractCursor(source);
+      const root: Parser.SyntaxNode = this.p.parse(code).rootNode;
 
-  test("select current top-level form: function call", async function () {
-    let raw = `
-def hello_world():
-    print("hello world!")
-
-hello_wor$ld()
-`;
-    const { cursor, code } = extractCursor(raw);
-    const root: Parser.SyntaxNode = this.p.parse(code).rootNode;
-
-    const res = parser.getTopLevelForm(root, cursor);
-    assert.strictEqual(res?.text, "hello_world()");
-  });
-
-  test("select current top-level form: after function call", async function () {
-    let raw = `
-def hello_world():
-    print("hello world!")
-
-hello_world()$
-`;
-    const { cursor, code } = extractCursor(raw);
-    const root: Parser.SyntaxNode = this.p.parse(code).rootNode;
-
-    const res = parser.getTopLevelForm(root, cursor);
-    assert.strictEqual(res?.text, "hello_world()");
+      const res = parser.getTopLevelForm(root, cursor);
+      assert.strictEqual(res?.text, selected, `failed input: ${source}`);
+    }
   });
 
   test("select preceding form", async function () {
@@ -67,6 +67,10 @@ hello_world()$
       [`hello(2, "world", loren("ipsum")$, True)`, `loren("ipsum")`],
       [`hello(2, "world", loren("ipsum"), True$)`, `True`],
       [`hello(2, "world", loren("ipsum"), True)$`, `hello(2, "world", loren("ipsum"), True)`],
+      [`1+2$`, `2`],
+      [`(1+2)$`, `(1+2)`],
+      [`1+2           $`, `2`],
+      [`loren(ipsum()      $, dolor())`, "ipsum()"],
     ];
 
     for (const [source, selected] of tests) {
@@ -74,7 +78,7 @@ hello_world()$
       const root: Parser.SyntaxNode = this.p.parse(code).rootNode;
 
       const res = parser.getPrecedingForm(root, cursor);
-      assert.strictEqual(res?.text, selected);
+      assert.strictEqual(res?.text, selected, `failed input: ${source}`);
     }
   });
 });
