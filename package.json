@@ -2,7 +2,7 @@
 	"name": "peptide",
 	"displayName": "Peptide: Python Interactive Programming",
 	"description": "(early development) CIDER/SLIME-like REPL-driven programming for Python",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"publisher": "tysg",
 	"repository": {
 		"type": "git",
