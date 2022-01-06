@@ -83,6 +83,7 @@
 		"vsce": "^2.6.3"
 	},
 	"dependencies": {
+		"@jupyterlab/services": "^6.2.5",
 		"web-tree-sitter": "^0.19.4"
 	}
 }
