@@ -72,19 +72,19 @@ hello_world()
 }
 
 export async function main(): Promise<void> {
-  const settings = ServerConnection.makeSettings({baseUrl: "http://localhost:8888" , token: "8bd36b56927c7e9a4fe011ed20a38ccfc372d5e486c65221"})
+  const settings = ServerConnection.makeSettings({baseUrl: "http://localhost:8888" , token: "c0b2c7dac6e9bbccf62fbe98d33982219c1142a4ec016c88"})
 
   // Start a python kernel
   const kernelManager = new KernelManager({serverSettings: settings});
-  // const kernel = await kernelManager.startNew({ name: 'python' });
-  // await executeCode(kernel);
-  console.log('Finding all existing kernels');
-  const kernelModels = await KernelAPI.listRunning(settings);
-  console.log(kernelModels);
-  if (kernelModels.length > 0) {
-    console.log(`Connecting to ${kernelModels[0].name}`);
-    kernelManager.connectTo({ model: kernelModels[0] });
-  }
+  const kernel = await kernelManager.startNew({ name: 'python' });
+  await executeCode(kernel);
+  // console.log('Finding all existing kernels');
+  // const kernelModels = await KernelAPI.listRunning(settings);
+  // console.log(kernelModels);
+  // if (kernelModels.length > 0) {
+  //   console.log(`Connecting to ${kernelModels[0].name}`);
+  //   kernelManager.connectTo({ model: kernelModels[0] });
+  // }
 }
 
 main()

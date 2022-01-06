@@ -17,7 +17,8 @@
 	"activationEvents": [
 		"onCommand:peptide.evalTopLevelForm",
 		"onCommand:peptide.evalCurrentFile",
-		"onCommand:peptide.evalPrecedingForm"
+		"onCommand:peptide.evalPrecedingForm",
+		"onCommand:peptide.inputJupyterServerURI"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -35,6 +36,11 @@
 			{
 				"command": "peptide.evalPrecedingForm",
 				"title": "Peptide: Evaluate Preceding Form",
+				"enablement": "editorLangId == python"
+			},
+			{
+				"command": "peptide.inputJupyterServerURI",
+				"title": "Peptide: Input Jupyter Server URI and Token",
 				"enablement": "editorLangId == python"
 			}
 		],

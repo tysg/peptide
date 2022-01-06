@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
 import * as Parser from "web-tree-sitter";
+import { JupyterConnection } from "./connection";
 import { getTopLevelForm } from "./parser";
 
 // Commands related to evaluation
 type SelectFn = (root: Parser.SyntaxNode, offset: number) => Parser.SyntaxNode | undefined;
 
-async function evalSelectedForm(parser: Parser, selectFn: SelectFn) {
+async function evalSelectedForm(ctx: vscode.ExtensionContext, parser: Parser, selectFn: SelectFn) {
   let editor = vscode.window.activeTextEditor;
   if (!editor) {
     return;
@@ -23,8 +24,16 @@ async function evalSelectedForm(parser: Parser, selectFn: SelectFn) {
     return;
   }
 
-  editor.selection = selectSyntaxNode(form);
-  vscode.commands.executeCommand("python.execSelectionInTerminal");
+  const conn: JupyterConnection | undefined = ctx.workspaceState.get("jupyterConn");
+  if (!conn) {
+    return;
+  }
+
+  const res = await conn.execute(form.text);
+  vscode.window.showInformationMessage(res);
+
+  // editor.selection = selectSyntaxNode(form);
+  // vscode.commands.executeCommand("python.execSelectionInTerminal");
 }
 
 async function evalCurrentFile(parser: Parser) {
