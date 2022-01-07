@@ -30,7 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("peptide.inputJupyterServerURI", async () => {
+    vscode.commands.registerCommand("peptide.connectJupyterServerURI", async () => {
       let pattern = /(https?:\/\/.+)\/\?token=(.+)/;
       const result = await vscode.window.showInputBox({
         value: "http://localhost:8888/?token=c0b2c7dac6e9bbccf62fbe98d33982219c1142a4ec016c88",

@@ -18,7 +18,7 @@
 		"onCommand:peptide.evalTopLevelForm",
 		"onCommand:peptide.evalCurrentFile",
 		"onCommand:peptide.evalPrecedingForm",
-		"onCommand:peptide.inputJupyterServerURI"
+		"onCommand:peptide.connectJupyterServerURI"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -39,8 +39,8 @@
 				"enablement": "editorLangId == python"
 			},
 			{
-				"command": "peptide.inputJupyterServerURI",
-				"title": "Peptide: Input Jupyter Server URI and Token",
+				"command": "peptide.connectJupyterServerURI",
+				"title": "Peptide: Connect to a Running Jupyter Server",
 				"enablement": "editorLangId == python"
 			}
 		],

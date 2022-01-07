@@ -19,7 +19,7 @@ export class JupyterConnection {
     let executionResult: string;
     future.onIOPub = (msg) => {
       if (msg.header.msg_type !== "status") {
-        //@ts-ignore
+        //@ts-ignore: field `data` existing on `content`
         executionResult = msg.content.data["text/plain"];
       }
     };
