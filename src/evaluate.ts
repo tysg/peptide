@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as Parser from "web-tree-sitter";
 import { JupyterConnection } from "./connection";
-import { getTopLevelForm } from "./parser";
+import { decorateEvaluateResultRange } from "./decorate";
 
 // Commands related to evaluation
 type SelectFn = (root: Parser.SyntaxNode, offset: number) => Parser.SyntaxNode | undefined;
@@ -29,20 +29,26 @@ async function evalSelectedForm(ctx: vscode.ExtensionContext, parser: Parser, se
     return;
   }
 
-  const res = await conn.execute(form.text);
-  vscode.window.showInformationMessage(res);
+  const range = new vscode.Range(doc.positionAt(form.startIndex), doc.positionAt(form.endIndex));
 
-  // editor.selection = selectSyntaxNode(form);
-  // vscode.commands.executeCommand("python.execSelectionInTerminal");
+  const res = await conn.execute(form.text);
+
+  decorateEvaluateResultRange(range, res);
+  // vscode.window.showInformationMessage(res);
 }
 
-async function evalCurrentFile(parser: Parser) {
+async function evalCurrentFile(ctx: vscode.ExtensionContext, parser: Parser) {
   let editor = vscode.window.activeTextEditor;
   if (!editor) {
     return;
   }
   let doc = editor.document;
   const tree = parser.parse(doc.getText()).rootNode;
+
+  const conn: JupyterConnection | undefined = ctx.workspaceState.get("jupyterConn");
+  if (!conn) {
+    return;
+  }
 
   editor.selection = new vscode.Selection(doc.positionAt(0), doc.positionAt(tree.endIndex));
   vscode.commands.executeCommand("python.execSelectionInTerminal");

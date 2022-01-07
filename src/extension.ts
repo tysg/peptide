@@ -26,7 +26,9 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("peptide.evalCurrentFile", () => evalCurrentFile(parser))
+    vscode.commands.registerCommand("peptide.evalCurrentFile", () =>
+      evalCurrentFile(context, parser)
+    )
   );
 
   context.subscriptions.push(
@@ -36,14 +38,15 @@ export async function activate(context: vscode.ExtensionContext) {
         value: "http://localhost:8888/?token=c0b2c7dac6e9bbccf62fbe98d33982219c1142a4ec016c88",
         placeHolder: "Paste the Jupyter URL here..",
         validateInput: (text) => {
-          // vscode.window.showInformationMessage(`Validating: ${text}`);
           return pattern.test(text) ? null : "Not valid Jupyter URL";
         },
       });
+
       const urlMatch = result?.trim().match(pattern);
       if (!urlMatch) {
         return;
       }
+
       const [_, baseUrl, token] = urlMatch;
       try {
         const conn = await JupyterConnection.init(baseUrl, token);
