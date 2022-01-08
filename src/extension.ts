@@ -1,63 +1,47 @@
-import { url } from "inspector";
 import * as vscode from "vscode";
-import { JupyterConnection } from "./connection";
-import { evalSelectedForm, evalCurrentFile } from "./evaluate";
-import { initParser, getPrecedingForm, getTopLevelForm } from "./parser";
+import * as commands from "./command";
+import { connectToJupyter } from "./command";
+import { Ctx } from "./ctx";
+
+let ctx: Ctx | undefined;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export async function activate(context: vscode.ExtensionContext) {
-  const parser = await initParser();
-
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('Congratulations, your extension "peptide" is now active!');
 
   context.subscriptions.push(
-    vscode.commands.registerCommand("peptide.evalTopLevelForm", () =>
-      evalSelectedForm(context, parser, getTopLevelForm)
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand("peptide.evalPrecedingForm", () =>
-      evalSelectedForm(context, parser, getPrecedingForm)
-    )
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand("peptide.evalCurrentFile", () =>
-      evalCurrentFile(context, parser)
-    )
-  );
-
-  context.subscriptions.push(
     vscode.commands.registerCommand("peptide.connectJupyterServerURI", async () => {
-      let pattern = /(https?:\/\/.+)\/\?token=(.+)/;
-      const result = await vscode.window.showInputBox({
-        value: "http://localhost:8888/?token=c0b2c7dac6e9bbccf62fbe98d33982219c1142a4ec016c88",
-        placeHolder: "Paste the Jupyter URL here..",
-        validateInput: (text) => {
-          return pattern.test(text) ? null : "Not valid Jupyter URL";
-        },
-      });
-
-      const urlMatch = result?.trim().match(pattern);
-      if (!urlMatch) {
+      const conn = await connectToJupyter();
+      if (!conn) {
         return;
       }
+      ctx = await Ctx.create(context, conn);
 
-      const [_, baseUrl, token] = urlMatch;
-      try {
-        const conn = await JupyterConnection.init(baseUrl, token);
-        context.workspaceState.update("jupyterConn", conn);
-        vscode.window.showInformationMessage(`Connected: ${result}`);
-      } catch (error) {
-        vscode.window.showErrorMessage(`Unable to connect to Jupyter Server with ${result}`);
-      }
+      vscode.commands.executeCommand("setContext", "peptide.isJupyterConnected", true);
+      registerCodeEvaluationCommands(ctx);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument((_) => {
+      ctx?.decorator.clearEvaluateResult;
     })
   );
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export async function deactivate() {
+  await ctx?.dispose();
+  vscode.commands.executeCommand("setContext", "peptide.isJupyterConnected", undefined);
+  ctx = undefined;
+}
+
+function registerCodeEvaluationCommands(ctx: Ctx) {
+  ctx.registerCommand("evalCurrentFile", commands.evalCurrentFile);
+  ctx.registerCommand("evalPrecedingForm", commands.evalPrecedingForm);
+  ctx.registerCommand("evalTopLevelForm", commands.evalTopLevelForm);
+  ctx.registerCommand("clearInlineEvalResult", commands.clearInlineEvalResult);
+}

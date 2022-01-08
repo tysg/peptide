@@ -15,50 +15,63 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:peptide.evalTopLevelForm",
-		"onCommand:peptide.evalCurrentFile",
-		"onCommand:peptide.evalPrecedingForm",
+		"onLanguage:python",
 		"onCommand:peptide.connectJupyterServerURI"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
+				"category": "Peptide",
 				"command": "peptide.evalTopLevelForm",
-				"title": "Peptide: Evaluate Top Level Form",
-				"enablement": "editorLangId == python"
+				"title": "Evaluate Top Level Form",
+				"enablement": "editorLangId == python && peptide.isJupyterConnected"
 			},
 			{
+				"category": "Peptide",
 				"command": "peptide.evalCurrentFile",
-				"title": "Peptide: Evaluate the Current File",
-				"enablement": "editorLangId == python"
+				"title": "Evaluate the Current File",
+				"enablement": "editorLangId == python && peptide.isJupyterConnected"
 			},
 			{
+				"category": "Peptide",
 				"command": "peptide.evalPrecedingForm",
-				"title": "Peptide: Evaluate Preceding Form",
+				"title": "Evaluate Preceding Form",
+				"enablement": "editorLangId == python && peptide.isJupyterConnected"
+			},
+			{
+				"category": "Peptide",
+				"command": "peptide.connectJupyterServerURI",
+				"title": "Connect to a Running Jupyter Server",
 				"enablement": "editorLangId == python"
 			},
 			{
-				"command": "peptide.connectJupyterServerURI",
-				"title": "Peptide: Connect to a Running Jupyter Server",
-				"enablement": "editorLangId == python"
+				"category": "Peptide",
+				"command": "peptide.clearInlineEvalResult",
+				"title": "Clear Inline Evaluation Result",
+				"enablement": "editorLangId == python && peptide.isJupyterConnected"
 			}
 		],
 		"keybindings": [
 			{
 				"command": "peptide.evalTopLevelForm",
 				"key": "alt+enter",
-				"when": "editorLangId == python && editorTextFocus"
+				"when": "editorLangId == python && editorTextFocus && peptide.isJupyterConnected"
 			},
 			{
 				"command": "peptide.evalCurrentFile",
 				"key": "ctrl+alt+enter",
-				"when": "editorLangId == python && editorTextFocus"
+				"when": "editorLangId == python && editorTextFocus && peptide.isJupyterConnected"
 			},
 			{
 				"command": "peptide.evalPrecedingForm",
 				"key": "ctrl+enter",
-				"when": "editorLangId == python && editorTextFocus"
+				"when": "editorLangId == python && editorTextFocus && peptide.isJupyterConnected"
+			},
+			{
+				"command": "peptide.clearInlineEvalResult",
+				"key": "shift+escape",
+				"when": "editorLangId == python && editorTextFocus && peptide.isJupyterConnected"
 			}
 		]
 	},
