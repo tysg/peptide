@@ -1,18 +1,17 @@
 import * as vscode from "vscode";
 import * as Parser from "web-tree-sitter";
-import { getTopLevelForm } from "./parser";
+import { Ctx } from "./ctx";
 
-// Commands related to evaluation
 type SelectFn = (root: Parser.SyntaxNode, offset: number) => Parser.SyntaxNode | undefined;
 
-async function evalSelectedForm(parser: Parser, selectFn: SelectFn) {
+export async function evalSelectedForm(ctx: Ctx, selectFn: SelectFn) {
   let editor = vscode.window.activeTextEditor;
   if (!editor) {
     return;
   }
   let doc = editor.document;
 
-  const tree = parser.parse(doc.getText()).rootNode;
+  const tree = ctx.parser.parse(doc.getText()).rootNode;
 
   // find form at cursor
   const p = editor.selection.active;
@@ -23,29 +22,7 @@ async function evalSelectedForm(parser: Parser, selectFn: SelectFn) {
     return;
   }
 
-  editor.selection = selectSyntaxNode(form);
-  vscode.commands.executeCommand("python.execSelectionInTerminal");
+  const range = new vscode.Range(doc.positionAt(form.startIndex), doc.positionAt(form.endIndex));
+  const res = await ctx.client.execute(form.text);
+  ctx.decorator.decorateEvaluateResultRange(range, res);
 }
-
-async function evalCurrentFile(parser: Parser) {
-  let editor = vscode.window.activeTextEditor;
-  if (!editor) {
-    return;
-  }
-  let doc = editor.document;
-  const tree = parser.parse(doc.getText()).rootNode;
-
-  editor.selection = new vscode.Selection(doc.positionAt(0), doc.positionAt(tree.endIndex));
-  vscode.commands.executeCommand("python.execSelectionInTerminal");
-}
-
-function selectSyntaxNode(f: Parser.SyntaxNode): vscode.Selection {
-  return new vscode.Selection(
-    f.startPosition.row,
-    f.startPosition.column,
-    f.endPosition.row,
-    f.endPosition.column
-  );
-}
-
-export { evalSelectedForm, evalCurrentFile };
