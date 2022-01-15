@@ -34,14 +34,16 @@ export async function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export async function deactivate() {
-  await ctx?.dispose();
-  vscode.commands.executeCommand("setContext", "peptide.isJupyterConnected", undefined);
-  ctx = undefined;
+  if (ctx) {
+    await ctx?.dispose();
+    vscode.commands.executeCommand("setContext", "peptide.isJupyterConnected", undefined);
+    ctx = undefined;
+  }
 }
 
 function registerCodeEvaluationCommands(ctx: Ctx) {
   ctx.registerCommand("evalCurrentFile", commands.evalCurrentFile);
   ctx.registerCommand("evalPrecedingForm", commands.evalPrecedingForm);
-  ctx.registerCommand("evalTopLevelForm", commands.evalTopLevelForm);
+  ctx.registerCommand("evalTopLevelStmt", commands.evalTopLevelStmt);
   ctx.registerCommand("clearInlineEvalResult", commands.clearInlineEvalResult);
 }

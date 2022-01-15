@@ -28,7 +28,7 @@ export function evalPrecedingForm(ctx: Ctx): Cmd {
   return async () => evalSelectedForm(ctx, getPrecedingForm);
 }
 
-export function evalTopLevelForm(ctx: Ctx): Cmd {
+export function evalTopLevelStmt(ctx: Ctx): Cmd {
   return async () => evalSelectedForm(ctx, getTopLevelForm);
 }
 

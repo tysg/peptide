@@ -23,8 +23,8 @@
 		"commands": [
 			{
 				"category": "Peptide",
-				"command": "peptide.evalTopLevelForm",
-				"title": "Evaluate Top Level Form",
+				"command": "peptide.evalTopLevelStmt",
+				"title": "Evaluate Top Level Statement",
 				"enablement": "editorLangId == python && peptide.isJupyterConnected"
 			},
 			{
@@ -54,7 +54,7 @@
 		],
 		"keybindings": [
 			{
-				"command": "peptide.evalTopLevelForm",
+				"command": "peptide.evalTopLevelStmt",
 				"key": "alt+enter",
 				"when": "editorLangId == python && editorTextFocus && peptide.isJupyterConnected"
 			},
